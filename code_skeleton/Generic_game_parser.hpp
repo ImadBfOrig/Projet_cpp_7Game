@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Generic_card_parser.hpp"
+#include <cstdint>
 #include <unordered_map>
 #include <string>
 

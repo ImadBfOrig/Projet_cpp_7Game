@@ -1,41 +1,31 @@
+#include "MyGameMapper.hpp"
+#include "RandomStrategy.hpp"
+#include "GreedyStrategy.hpp"
 #include <iostream>
-#include <string>
+#include <memory>
 
-// Include your framework files here...
-// e.g. #include "MyGameMapper.hpp"
-// #include "RandomStrategy.hpp"
-// #include "GreedyStrategy.hpp"
-// #include "StrategyLoader.hpp"
+int main() {
+    sevens::MyGameMapper gameMapper;
 
-int main(int argc, char* argv[]) {
-    // This is a minimal skeleton for demonstration purposes.
-    // Students should integrate their classes or call the relevant
-    // game logic from MyGameMapper (or other classes) as needed.
+    std::cout << "===== Chargement des cartes =====" << std::endl;
+    gameMapper.read_cards("");
     
-    if (argc < 2) {
-        std::cout << "Usage: ./sevens_game [mode] [optional libs...]\n";
-        return 1;
-    }
+    std::cout << "\n===== Initialisation du plateau =====" << std::endl;
+    gameMapper.read_game("");
     
-    std::string mode = argv[1];
-    
-    if (mode == "internal") {
-        std::cout << "[main] Internal mode is not fully implemented.\n";
-        // TODO: Possibly create MyGameMapper instance and simulate 
-        // with default random approach
+    std::cout << "\n===== Vérification des stratégies enregistrées =====" << std::endl;
+
+    auto randomStrategy = std::make_shared<sevens::RandomStrategy>();
+    auto greedyStrategy = std::make_shared<sevens::GreedyStrategy>();
+
+    gameMapper.registerStrategy(1, randomStrategy);
+    gameMapper.registerStrategy(2, greedyStrategy);
+
+    std::cout << "\n===== Simulation silencieuse =====" << std::endl;
+    auto results_silent = gameMapper.compute_game_progress(2);
+    for (const auto& [playerID, score] : results_silent) {
+        std::cout << "Joueur " << playerID << " a terminé avec " << score << " cartes restantes.\n";
     }
-    else if (mode == "demo") {
-        std::cout << "[main] Demo mode is not fully implemented.\n";
-        // TODO: Possibly register built-in strategies and run a game
-    }
-    else if (mode == "competition") {
-        std::cout << "[main] Competition mode is not fully implemented.\n";
-        // TODO: Dynamically load .so libraries from argv[2..] 
-        // and simulate a competition
-    }
-    else {
-        std::cerr << "[main] Unknown mode: " << mode << std::endl;
-    }
-    
+
     return 0;
 }

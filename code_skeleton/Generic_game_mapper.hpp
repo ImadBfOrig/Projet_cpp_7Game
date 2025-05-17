@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Generic_game_parser.hpp"
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <utility>

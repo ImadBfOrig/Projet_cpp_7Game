@@ -1,48 +1,28 @@
 #pragma once
-
 #include "Generic_game_mapper.hpp"
-#include "PlayerStrategy.hpp"
-#include <random>
-#include <unordered_map>
-#include <vector>
+#include "MyCardParser.hpp"
+#include "MyGameParser.hpp"
+#include "PlayerStrategy.hpp"  // 🔄 Ajouté pour corriger l'erreur
 #include <memory>
-#include <string>
+#include <unordered_map>
 
 namespace sevens {
 
-/**
- * Enhanced Sevens simulation with strategy support:
- *  - Possibly internal mode or competition mode
- */
 class MyGameMapper : public Generic_game_mapper {
 public:
     MyGameMapper();
-    ~MyGameMapper() = default;
 
-    std::vector<std::pair<uint64_t, uint64_t>>
-    compute_game_progress(uint64_t numPlayers) override;
-
-    std::vector<std::pair<uint64_t, uint64_t>>
-    compute_and_display_game(uint64_t numPlayers) override;
-    
-    std::vector<std::pair<std::string, uint64_t>>
-    compute_game_progress(const std::vector<std::string>& playerNames) override;
-    
-    std::vector<std::pair<std::string, uint64_t>>
-    compute_and_display_game(const std::vector<std::string>& playerNames) override;
-
-    // Required by Generic_card_parser and Generic_game_parser
     void read_cards(const std::string& filename) override;
     void read_game(const std::string& filename) override;
-    
-    // Strategy management
-    void registerStrategy(uint64_t playerID, std::shared_ptr<PlayerStrategy> strategy);
     bool hasRegisteredStrategies() const;
+    void registerStrategy(uint64_t playerID, std::shared_ptr<sevens::PlayerStrategy> strategy);
+    std::vector<std::pair<uint64_t, uint64_t>> compute_game_progress(uint64_t numPlayers) override;
+    std::vector<std::pair<uint64_t, uint64_t>> compute_and_display_game(uint64_t numPlayers) override;
 
 private:
-    // You can define any data structures needed to track the game
-    // E.g., player hands, table layout, random engine, etc.
-    // ...
+    std::unique_ptr<MyCardParser> card_parser;
+    std::unique_ptr<MyGameParser> game_parser;
+    std::unordered_map<uint64_t, std::shared_ptr<sevens::PlayerStrategy>> strategies; // 🔄 Correction du namespace
 };
 
 } // namespace sevens

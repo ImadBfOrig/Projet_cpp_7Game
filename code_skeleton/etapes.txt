@@ -1,0 +1,6 @@
+compilation :
+g++ -std=c++17 -Wall -Wextra -Werror -pedantic -pedantic-errors -O3 -ldl *.cpp -o sevens_game
+
+Lancement en mode demo :
+- avec 4 joueurs : ./sevens_game internal
+- vec les stratégies : ./sevens_game demo

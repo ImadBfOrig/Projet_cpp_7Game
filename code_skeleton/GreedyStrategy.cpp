@@ -6,32 +6,24 @@ namespace sevens {
 
 void GreedyStrategy::initialize(uint64_t playerID) {
     myID = playerID;
-    // No special initialization for this minimal version
 }
 
 int GreedyStrategy::selectCardToPlay(
     const std::vector<Card>& hand,
     const std::unordered_map<uint64_t, std::unordered_map<uint64_t, bool>>& tableLayout)
 {
-    // A trivial "greedy" approach:
-    // 1. If the hand is empty, pass (-1).
-    // 2. Otherwise, just pick the first card in the hand. 
-    //    (We do not check adjacency or any scoring.)
+    (void)tableLayout;  // 🔄 Ajout pour éviter l'erreur de paramètre inutilisé
 
     if (hand.empty()) {
         return -1; // pass
     }
-    
-    return 0; // Always choose the first card in the hand
+
+    return 0; // Toujours choisir la première carte de la main
 }
 
-void GreedyStrategy::observeMove(uint64_t /*playerID*/, const Card& /*playedCard*/) {
-    // Ignored in minimal version
-}
+void GreedyStrategy::observeMove(uint64_t /*playerID*/, const Card& /*playedCard*/) {}
 
-void GreedyStrategy::observePass(uint64_t /*playerID*/) {
-    // Ignored in minimal version
-}
+void GreedyStrategy::observePass(uint64_t /*playerID*/) {}
 
 std::string GreedyStrategy::getName() const {
     return "GreedyStrategy";

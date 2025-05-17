@@ -1,13 +1,14 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 #include <unordered_map>
 #include <iostream>
 
 namespace sevens {
 
 /**
- * Represents a single playing card for Sevens: 
+ * Represents a single playing card for Sevens:
  *   suit: 0..3  (0=Clubs,1=Diamonds,2=Hearts,3=Spades)
  *   rank: 1..13 (1=Ace,2=2,...,13=King)
  */

@@ -18,7 +18,7 @@ public:
     void initialize(uint64_t playerID) override;
     int selectCardToPlay(
         const std::vector<Card>& hand,
-        const std::unordered_map<uint64_t, std::unordered_map<uint64_t, bool>>& tableLayout) override; //overide redéfinit une méthode virtuelle déclarée dans la classe de base
+        const std::unordered_map<uint64_t, std::unordered_map<uint64_t, bool>>& tableLayout) override;
     void observeMove(uint64_t playerID, const Card& playedCard) override;
     void observePass(uint64_t playerID) override;
     std::string getName() const override;
