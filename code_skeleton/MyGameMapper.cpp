@@ -5,12 +5,12 @@
 #include <cstdint>
 #include <iostream>
 #include <iterator>
-#include <algorithm> // Pour std::shuffle
-#include <random>    // Pour le générateur aléatoire
+#include <algorithm>
+#include <random> 
 
 namespace sevens {
 
-MyGameMapper::MyGameMapper() : rng(42), initialDistributionDone(false) {
+MyGameMapper::MyGameMapper() : rng(std::random_device{}()), initialDistributionDone(false) {
     this->card_parser = std::make_unique<MyCardParser>();
     this->game_parser = std::make_unique<MyGameParser>();
 }
@@ -33,25 +33,26 @@ bool MyGameMapper::hasRegisteredStrategies() const {
 
 void MyGameMapper::registerStrategy(uint64_t playerID, std::shared_ptr<sevens::PlayerStrategy> strategy) {
     strategies[playerID] = strategy;
-    std::cout << "[MyGameMapper::registerStrategy] Strategie enregistree pour le joueur " << playerID << "." << std::endl;
+    std::cout << "[MyGameMapper::registerStrategy] Strategie enregistree pour le joueur " << playerID 
+              << " (" << typeid(*strategy).name() << ")" << std::endl;
 }
 
 bool MyGameMapper::isCardPlayable(const Card& card) const {
     auto& layout = game_parser->get_table_layout();
 
-    if (!layout[card.suit][7] && card.rank != 7) {
+    if (!layout.at(card.suit).at(7) && card.rank != 7) {
         return false;
     }
 
     if (card.rank == 1) {
-        return layout[card.suit].count(2);
+        return layout.at(card.suit).count(2);
     }
     if (card.rank == 13) {
-        return layout[card.suit].count(12);
+        return layout.at(card.suit).count(12);
     }
 
-    bool leftPlayable = layout[card.suit].count(card.rank - 1);
-    bool rightPlayable = layout[card.suit].count(card.rank + 1);
+    bool leftPlayable = layout.at(card.suit).count(card.rank - 1);
+    bool rightPlayable = layout.at(card.suit).count(card.rank + 1);
 
     return leftPlayable || rightPlayable;
 }
@@ -60,7 +61,7 @@ void MyGameMapper::distributeCards() {
     if (!initialDistributionDone) {
         std::vector<Card> allCards;
         for (const auto& [index, card] : card_parser->get_cards_hashmap()) {
-            if (card.rank != 7) { // ✅ Ne pas distribuer les 7
+            if (card.rank != 7) { 
                 allCards.push_back(card);
             }
         }
@@ -76,6 +77,13 @@ void MyGameMapper::distributeCards() {
                 }
             }
             strategy->initialize(id);
+
+            // ✅ Afficher la main initiale
+            std::cout << "Main initiale du joueur " << id << " (" << typeid(*strategy).name() << ") : ";
+            for (const auto& card : initialHands[id]) {
+                std::cout << "[" << card.suit << "," << card.rank << "] ";
+            }
+            std::cout << std::endl;
         }
         initialDistributionDone = true;
     }
@@ -100,7 +108,7 @@ std::vector<std::pair<uint64_t, uint64_t>> MyGameMapper::compute_game_progress(u
                 Card playedCard = hand[cardIndex];
 
                 if (!isCardPlayable(playedCard)) {
-                    std::cerr << " ERREUR : La carte [" << playedCard.suit << "," << playedCard.rank
+                    std::cerr << "ERREUR : La carte [" << playedCard.suit << "," << playedCard.rank
                               << "] ne devrait pas etre jouable ! Coup annule." << std::endl;
                     continue;
                 }
@@ -119,16 +127,9 @@ std::vector<std::pair<uint64_t, uint64_t>> MyGameMapper::compute_game_progress(u
         results.emplace_back(id, hand.size());
     }
 
-    // Affichage du classement final
     std::sort(results.begin(), results.end(), [](const auto& a, const auto& b) {
         return a.second < b.second;
     });
-
-    std::cout << "\n===== Classement final (Simulation silencieuse) =====" << std::endl;
-    for (const auto& [id, score] : results) {
-        std::cout << "Joueur " << id << " : " << score << " cartes restantes." << std::endl;
-    }
-    std::cout << ">>> Le gagnant est le joueur " << results.front().first << " !" << std::endl;
 
     std::cout << "[MyGameMapper::compute_game_progress] Simulation terminee." << std::endl;
     return results;
@@ -142,8 +143,11 @@ std::vector<std::pair<uint64_t, uint64_t>> MyGameMapper::compute_and_display_gam
     std::unordered_map<uint64_t, std::vector<Card>> playerHands = initialHands;
 
     bool gameOver = false;
+    int turn = 1;
+
     while (!gameOver) {
         gameOver = true;
+        std::cout << "\n=== Tour " << turn++ << " ===" << std::endl;
 
         for (auto& [id, strategy] : strategies) {
             auto& hand = playerHands[id];
@@ -157,6 +161,12 @@ std::vector<std::pair<uint64_t, uint64_t>> MyGameMapper::compute_and_display_gam
 
                 std::cout << "Joueur " << id << " joue : Suit = " << playedCard.suit
                           << ", Rank = " << playedCard.rank << std::endl;
+
+                std::cout << "Main restante : ";
+                for (const auto& c : hand) {
+                    std::cout << "[" << c.suit << "," << c.rank << "] ";
+                }
+                std::cout << std::endl;
 
                 gameOver = false;
             } else {

@@ -5,7 +5,9 @@
 #include "MyGameParser.hpp"
 #include <memory>
 #include <unordered_map>
-#include <random>
+#include <vector>
+#include <algorithm>
+#include <random> // ✅ Nécessaire pour std::mt19937
 
 namespace sevens {
 
@@ -15,7 +17,6 @@ public:
 
     void read_cards(const std::string& filename) override;
     void read_game(const std::string& filename) override;
-    
     bool hasRegisteredStrategies() const;
     void registerStrategy(uint64_t playerID, std::shared_ptr<sevens::PlayerStrategy> strategy);
 
@@ -25,14 +26,15 @@ public:
 private:
     std::unique_ptr<MyCardParser> card_parser;
     std::unique_ptr<MyGameParser> game_parser;
+    std::unordered_map<uint64_t, std::vector<Card>> initialHands;
     std::unordered_map<uint64_t, std::shared_ptr<sevens::PlayerStrategy>> strategies;
 
-    std::mt19937 rng;                                  // 🔄 Générateur aléatoire
-    bool initialDistributionDone;                      // ✅ Indicateur si la distribution est déjà faite
-    std::unordered_map<uint64_t, std::vector<Card>> initialHands;  // ✅ Les mains initiales distribuées
+    std::mt19937 rng;  // ✅ Générateur aléatoire correctement déclaré
+    bool initialDistributionDone;
 
-    bool isCardPlayable(const Card& card) const;       // ✅ Vérification si une carte est jouable
-    void distributeCards();                            // ✅ Méthode pour distribuer les cartes
+    void distributeCards();
+    bool isCardPlayable(const Card& card) const;
+    void printGameState(const std::unordered_map<uint64_t, std::unordered_map<uint64_t, bool>>& tableLayout) const;
 };
 
 } // namespace sevens

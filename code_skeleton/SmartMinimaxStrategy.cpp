@@ -61,16 +61,13 @@ bool SmartMinimaxStrategy::isCardPlayable(
     const Card& card,
     const std::unordered_map<uint64_t, std::unordered_map<uint64_t, bool>>& tableLayout
 ) const {
-    // 🔄 Vérification stricte : Le 7 doit être posé pour débloquer la suite
     if (!tableLayout.at(card.suit).count(7)) {
         return false;
     }
 
-    // 🔄 Vérification des voisins immédiats
     bool leftPlayable = (card.rank > 1) && tableLayout.at(card.suit).count(card.rank - 1);
     bool rightPlayable = (card.rank < 13) && tableLayout.at(card.suit).count(card.rank + 1);
 
-    // 🔍 Cas particuliers (1 et 13 ne sont jouables que si le 2 ou le 12 est présent)
     if (card.rank == 1) {
         return tableLayout.at(card.suit).count(2);
     }
@@ -78,10 +75,8 @@ bool SmartMinimaxStrategy::isCardPlayable(
         return tableLayout.at(card.suit).count(12);
     }
 
-    // 🔍 Cas général : les voisins doivent exister
     return leftPlayable || rightPlayable;
 }
-
 
 int SmartMinimaxStrategy::minimax(
     const std::vector<Card>& hand,
@@ -123,7 +118,6 @@ int SmartMinimaxStrategy::evaluate(
 ) const {
     int score = 0;
 
-    // Plus il y a de cartes posées dans les séquences, plus le score est élevé
     for (const auto& [suit, ranks] : tableLayout) {
         for (const auto& [rank, isPlaced] : ranks) {
             if (isPlaced) {
@@ -132,7 +126,6 @@ int SmartMinimaxStrategy::evaluate(
         }
     }
 
-    // Plus l'adversaire est bloqué, plus le score est élevé
     for (const auto& [playerID, moves] : opponentMoves) {
         score -= static_cast<int>(moves.size()) * 5;
     }
@@ -141,3 +134,9 @@ int SmartMinimaxStrategy::evaluate(
 }
 
 } // namespace sevens
+
+#ifdef BUILD_SHARED_LIB
+extern "C" sevens::PlayerStrategy* createStrategy() {
+    return new sevens::SmartMinimaxStrategy();
+}
+#endif
