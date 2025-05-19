@@ -27,9 +27,12 @@ private:
     std::unique_ptr<MyGameParser> game_parser;
     std::unordered_map<uint64_t, std::shared_ptr<sevens::PlayerStrategy>> strategies;
 
-    std::mt19937 rng;  // 🔄 Moteur de génération aléatoire
+    std::mt19937 rng;                                  // 🔄 Générateur aléatoire
+    bool initialDistributionDone;                      // ✅ Indicateur si la distribution est déjà faite
+    std::unordered_map<uint64_t, std::vector<Card>> initialHands;  // ✅ Les mains initiales distribuées
 
-    bool isCardPlayable(const Card& card) const;
+    bool isCardPlayable(const Card& card) const;       // ✅ Vérification si une carte est jouable
+    void distributeCards();                            // ✅ Méthode pour distribuer les cartes
 };
 
 } // namespace sevens
