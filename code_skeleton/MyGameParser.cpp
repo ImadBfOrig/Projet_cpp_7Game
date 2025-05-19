@@ -12,20 +12,20 @@ void MyGameParser::read_game(const std::string& /*filename*/) {
         table_layout[suit][7] = true;
     }
 
-    std::cout << "[MyGameParser::read_game] Plateau de jeu initialisé avec les 7 de chaque couleur.\n";
+    std::cout << "[MyGameParser::read_game] Plateau de jeu initialise avec les 7 de chaque couleur.\n";
 
-    // Vérification de l'initialisation
+    // Verification de l'initialisation
     for (const auto& [suit, ranks] : table_layout) {
         for (const auto& [rank, isPlaced] : ranks) {
             if (isPlaced) {
-                std::cout << "Carte posée: Suit = " << suit << ", Rank = " << rank << "\n";
+                std::cout << "Carte posee: Suit = " << suit << ", Rank = " << rank << "\n";
             }
         }
     }
 }
 
 void MyGameParser::read_cards(const std::string& /*filename*/) {
-    // Implémentation vide car MyGameParser ne lit pas les cartes
+    // Implementation vide car MyGameParser ne lit pas les cartes
 }
 
 std::unordered_map<uint64_t, std::unordered_map<uint64_t, bool>>& MyGameParser::get_table_layout() {

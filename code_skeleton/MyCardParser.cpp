@@ -6,7 +6,7 @@ namespace sevens {
 
 void MyCardParser::read_cards(const std::string& /*filename*/) {
     // Initialiser le deck de 52 cartes
-    // Les couleurs (suits) sont : 0 = Trèfle, 1 = Carreau, 2 = Coeur, 3 = Pique
+    // Les couleurs (suits) sont : 0 = Trefle, 1 = Carreau, 2 = Coeur, 3 = Pique
     // Les rangs (ranks) sont : 1 = As, 2, 3, ..., 10, 11 = Valet, 12 = Dame, 13 = Roi
 
     for (uint64_t suit = 0; suit < 4; ++suit) {
@@ -16,8 +16,8 @@ void MyCardParser::read_cards(const std::string& /*filename*/) {
         }
     }
 
-    // Vérification de l'initialisation
-    std::cout << "[MyCardParser::read_cards] Deck de 52 cartes initialisé avec succès.\n";
+    // Verification de l'initialisation
+    std::cout << "[MyCardParser::read_cards] Deck de 52 cartes initialise avec succes.\n";
 }
 
 } // namespace sevens
